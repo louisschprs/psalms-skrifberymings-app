@@ -1,0 +1,1 @@
+enum SangTipe { GEEN, PSALM, SKRIF_BERYMING }
