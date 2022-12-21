@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:psalms_skrifberymings/models/sang.dart';
 import 'package:psalms_skrifberymings/views/widgets/vers_slider.dart';
 
 class PsalmWidgets {
   static AppBar appBar({String title = "Psalm Boek"}) {
+    bool themeMode = true;
     return AppBar(
       title: Text(title),
       actions: <Widget>[
@@ -15,10 +17,10 @@ class PsalmWidgets {
           },
         ),
         IconButton(
-          icon: const Icon(Icons.fullscreen),
-          tooltip: 'Show FullScreen',
+          icon: Icon((themeMode) ? Icons.dark_mode : Icons.light_mode),
+          tooltip: 'App Theme',
           onPressed: () {
-            // handle the press
+            themeMode = !themeMode;
           },
         ),
       ],

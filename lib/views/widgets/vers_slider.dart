@@ -58,7 +58,7 @@ class _VersSliderState extends State<VersSlider> {
                   widget.sang.verse[position].text,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    height: 3,
+                    height: 2,
                     fontSize: 18,
                   ),
                 ),
