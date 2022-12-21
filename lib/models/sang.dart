@@ -1,18 +1,18 @@
-import 'package:psalms_skrifberymings/src/enums/Beryming.dart';
-import 'package:psalms_skrifberymings/src/enums/SangTipe.dart';
-import 'package:psalms_skrifberymings/models/Vers.dart';
+import 'package:psalms_skrifberymings/src/enums/beryming.dart';
+import 'package:psalms_skrifberymings/src/enums/sang_tipe.dart';
+import 'package:psalms_skrifberymings/models/vers.dart';
 
 class Sang {
-  SangTipe _tipe = SangTipe.GEEN;
+  SangTipe _tipe = SangTipe.geen;
   String _naam = "Geen Naam";
-  Beryming _beryming = Beryming.GEEN;
+  Beryming _beryming = Beryming.geen;
   List<Vers> _verse = [];
 
   Sang(SangTipe tipe, String naam, Beryming beryming, List<Vers> verse) {
-    this._tipe = tipe;
-    this._naam = naam;
-    this._beryming = beryming;
-    this._verse = verse;
+    _tipe = tipe;
+    _naam = naam;
+    _beryming = beryming;
+    _verse = verse;
   }
 
   String get naam => _naam;

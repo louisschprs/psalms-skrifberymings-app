@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:psalms_skrifberymings/models/Vers.dart';
-import 'package:psalms_skrifberymings/views/widgets/VersSlider.dart';
+import 'package:psalms_skrifberymings/models/sang.dart';
+import 'package:psalms_skrifberymings/views/widgets/vers_slider.dart';
 
 class PsalmWidgets {
-  static AppBar appBar() {
+  static AppBar appBar({String title = "Psalm Boek"}) {
     return AppBar(
-      title: const Text('Psalms & Skrifberyming'),
+      title: Text(title),
       actions: <Widget>[
         IconButton(
           icon: const Icon(Icons.text_format),
@@ -25,16 +25,16 @@ class PsalmWidgets {
     );
   }
 
-  static Container versContainer(
-      {required BuildContext context, required List<Vers> versLys}) {
-    return Container(
+  static SizedBox versContainer(
+      {required BuildContext context, required Sang sang}) {
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: Center(
         child: Padding(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: VersSlider(
-              versLys: versLys,
+              sang: sang,
             )),
       ),
     );
