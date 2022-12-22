@@ -5,9 +5,11 @@ import 'package:psalms_skrifberymings/src/enums/sang_tipe.dart';
 
 class VersSlider extends StatefulWidget {
   final Sang sang;
+  final int fontSize;
   const VersSlider({
     super.key,
     required this.sang,
+    required this.fontSize,
   });
 
   @override
@@ -35,35 +37,40 @@ class _VersSliderState extends State<VersSlider> {
   Widget build(BuildContext context) {
     return PageView.builder(
       itemBuilder: (context, position) {
-        return SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 50,
-              ),
-              Text(
-                "$sangText ${widget.sang.naam} Vers ${widget.sang.verse[position].nommer}",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 24,
+        return SingleChildScrollView(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 50,
                 ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              Center(
-                child: Text(
-                  widget.sang.verse[position].text,
+                Text(
+                  "$sangText ${widget.sang.nommer} Vers ${widget.sang.verse[position].nommer}",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    height: 2,
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: widget.fontSize + 6,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 50,
+                ),
+                Center(
+                  child: Text(
+                    widget.sang.verse[position].text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      height: 2,
+                      fontSize: widget.fontSize.toDouble(),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+              ],
+            ),
           ),
         );
       },

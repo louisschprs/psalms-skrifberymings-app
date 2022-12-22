@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:psalms_skrifberymings/models/psalm.dart';
 import 'package:psalms_skrifberymings/models/sang.dart';
 import 'package:psalms_skrifberymings/src/providers/theme_notifier.dart';
 import 'package:psalms_skrifberymings/views/screens/select_sang.dart';
@@ -7,7 +8,8 @@ import 'package:psalms_skrifberymings/views/widgets/psalm_widgets.dart';
 
 class HomeView extends StatefulWidget {
   final Sang sang;
-  const HomeView({super.key, required this.sang});
+  final int fontSize;
+  const HomeView({super.key, required this.sang, this.fontSize = 18});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -16,6 +18,14 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   bool isDarkTheme = false;
   late ThemeNotifier themeNotifier;
+  late int fontSize;
+  bool isFontSettingsOpen = false;
+
+  @override
+  void initState() {
+    fontSize = widget.fontSize;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +33,15 @@ class _HomeViewState extends State<HomeView> {
     themeNotifier = Provider.of<ThemeNotifier>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Psalm Boek'),
+        title: const Text('Psalm Boek'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.text_format),
             tooltip: 'Display Options',
             onPressed: () {
-              // handle the press
+              setState(() {
+                isFontSettingsOpen = !isFontSettingsOpen;
+              });
             },
           ),
           IconButton(
@@ -46,19 +58,66 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
       body: Container(
-        child: PsalmWidgets.versContainer(context: context, sang: widget.sang),
+        child: PsalmWidgets.versContainer(
+            context: context, sang: widget.sang, fontSize: fontSize),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Wrap(
+        direction: Axis.vertical,
+        children: (isFontSettingsOpen)
+            ? withSettingsButtons()
+            : [switchSongButtons()],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  Container switchSongButtons() {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      child: FloatingActionButton(
         child: const Icon(Icons.swap_horiz),
-        onPressed: () {
+        onPressed: () async {
+          Sang previousSang = await Psalm.fromCollection(widget.sang.nommer);
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => const SelectSangView(),
+              builder: (context) => SelectSangView(
+                previousSang: previousSang,
+                previousFontSize: fontSize,
+              ),
             ),
           );
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
+  }
+
+  List<Widget> withSettingsButtons() {
+    return [
+      Container(
+        margin: const EdgeInsets.all(10),
+        child: FloatingActionButton(
+          heroTag: "TextIncreasSetting",
+          child: const Icon(Icons.text_increase),
+          onPressed: () {
+            setState(() {
+              fontSize++;
+            });
+          },
+        ),
+      ),
+      Container(
+        margin: const EdgeInsets.all(10),
+        child: FloatingActionButton(
+          heroTag: "TextDecreaseSetting",
+          child: const Icon(Icons.text_decrease),
+          onPressed: () {
+            setState(() {
+              fontSize--;
+            });
+          },
+        ),
+      ),
+      switchSongButtons(),
+    ];
   }
 }

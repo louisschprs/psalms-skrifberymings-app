@@ -4,14 +4,16 @@ import 'package:flutter_spinbox/material.dart';
 import 'package:psalms_skrifberymings/models/psalm.dart';
 import 'package:psalms_skrifberymings/models/sang.dart';
 import 'package:psalms_skrifberymings/models/vers.dart';
-import 'package:psalms_skrifberymings/src/enums/beryming.dart';
 import 'package:psalms_skrifberymings/src/enums/sang_tipe.dart';
 import 'package:psalms_skrifberymings/views/screens/home.dart';
 // ignore: unused_import
 import 'package:psalms_skrifberymings/views/widgets/psalm_widgets.dart';
 
 class SelectSangView extends StatefulWidget {
-  const SelectSangView({super.key});
+  Sang previousSang;
+  int previousFontSize;
+  SelectSangView(
+      {super.key, required this.previousSang, required this.previousFontSize});
 
   @override
   State<SelectSangView> createState() => _SelectSangViewState();
@@ -23,8 +25,14 @@ class _SelectSangViewState extends State<SelectSangView> {
   int sangNommer = 0;
   double min = 1;
   double max = 150;
-  Sang sang = Sang(SangTipe.psalm, "Geen Sang Gekies", Beryming.totius, []);
+  late Sang sang;
   List<Vers> selectedVerse = [];
+
+  @override
+  void initState() {
+    sang = widget.previousSang;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,32 +65,45 @@ class _SelectSangViewState extends State<SelectSangView> {
             child: SpinBox(
               min: min,
               max: max,
-              value: 5,
+              value: widget.previousSang.nommer.toDouble(),
               digits: 3,
               decoration: const InputDecoration(labelText: 'Kies Lied Nommer'),
-              onChanged: (value) {
+              onChanged: (value) async {
+                Sang newSang = await Psalm.fromCollection(value.toInt());
+
                 setState(() {
-                  sang = Psalm.mock(nommer: value.toInt());
+                  sang = newSang;
                 });
               },
             ),
           ),
           const SizedBox(height: 60),
-          MultiSelectContainer(
-              key: ValueKey(sang.verse.length),
-              items: sang.getChoices(),
-              onChange: (allSelectedItems, selectedItem) {
-                setState(() {
-                  selectedVerse = allSelectedItems;
-                });
-              }),
+          Container(
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: MultiSelectContainer(
+                key: ValueKey(sang.verse.length),
+                items: sang.getChoices(),
+                onChange: (allSelectedItems, selectedItem) {
+                  setState(() {
+                    selectedVerse = allSelectedItems;
+                  });
+                }),
+          ),
           const SizedBox(height: 60),
           ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: ((context) => HomeView(
-                        sang: Sang(kiesSangTipe ?? SangTipe.psalm, sang.naam,
-                            sang.beryming, selectedVerse)))));
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: ((context) => HomeView(
+                            sang: Sang(
+                                kiesSangTipe ?? SangTipe.psalm,
+                                sang.nommer,
+                                sang.beryming,
+                                (selectedVerse.isNotEmpty)
+                                    ? selectedVerse
+                                    : sang.verse),
+                            fontSize: widget.previousFontSize))),
+                    (route) => false);
               },
               child: const Text(
                 "Vertoon",

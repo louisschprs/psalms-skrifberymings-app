@@ -5,18 +5,18 @@ import 'package:psalms_skrifberymings/models/vers.dart';
 
 class Sang {
   SangTipe _tipe = SangTipe.psalm;
-  String _naam = "Geen Naam";
+  int _nommer = 0;
   Beryming _beryming = Beryming.geen;
   List<Vers> _verse = [];
 
-  Sang(SangTipe tipe, String naam, Beryming beryming, List<Vers> verse) {
+  Sang(SangTipe tipe, int nommer, Beryming beryming, List<Vers> verse) {
     _tipe = tipe;
-    _naam = naam;
+    _nommer = nommer;
     _beryming = beryming;
     _verse = verse;
   }
 
-  String get naam => _naam;
+  int get nommer => _nommer;
   Beryming get beryming => _beryming;
   List<Vers> get verse => sortVerseAscending();
   SangTipe get tipe => _tipe;
@@ -31,10 +31,10 @@ class Sang {
 
   List<MultiSelectCard<Vers>> getChoices() {
     List<MultiSelectCard<Vers>> choices = [];
-    verse.forEach((vers) {
+    for (var vers in verse) {
       choices.add(
           MultiSelectCard<Vers>(value: vers, label: vers.nommer.toString()));
-    });
+    }
 
     return choices;
   }
